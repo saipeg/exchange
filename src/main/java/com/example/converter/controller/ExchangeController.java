@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ExchangeController {
+    private static int counter = 0;
     private final ConverterService converterService;
 
     public ExchangeController(ConverterService converterService) {
@@ -14,7 +15,8 @@ public class ExchangeController {
 
     @GetMapping("/exchange")
     public String getExchange() {
-        converterService.getExchangeFor();
-        return "расчет окончен";
+        int exchangeForUSD = converterService.getExchangeForUSD();
+        counter++;
+        return "расчет окончен, значение выбранной валюты: " + exchangeForUSD;
     }
 }
