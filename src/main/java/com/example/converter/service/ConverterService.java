@@ -17,7 +17,7 @@ public class ConverterService {
     HttpClient client = HttpClientBuilder.create().build();
     HttpResponse response;
 
-    public int getExchangeForUSD() {
+    public Double getExchangeFor(String currency) throws CurrencyNotFoundException {
         HttpUriRequest request = new HttpGet("https://open.er-api.com/v6/latest/USD");
 
         {
@@ -26,11 +26,13 @@ public class ConverterService {
                 var entity = response.getEntity();
 
                 String currencies = EntityUtils.toString(entity);
-                Pattern pattern = Pattern.compile("USD\":(.+?),");
+                Pattern pattern = Pattern.compile(currency + "\":(.+?),");
 
                 Matcher matcher = pattern.matcher(currencies);
                 if (matcher.find()) {
-                    return Integer.parseInt(matcher.group(1));
+                    return Double.parseDouble(matcher.group(1));
+                } else {
+                    throw new CurrencyNotFoundException();
                 }
 
             } catch (IOException e) {
@@ -39,7 +41,7 @@ public class ConverterService {
             }
         }
 
-        return 0;
+        return 0.0;
     }
 
 }
